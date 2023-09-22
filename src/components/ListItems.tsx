@@ -1,17 +1,13 @@
 /* eslint-disable react/jsx-key */
 'use client';
-import {
-  Box,
-  CircularProgress,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, CircularProgress, MenuItem, Select, Stack } from '@mui/material';
 import axios from 'axios';
+import { format } from 'date-fns';
 import React, { useCallback, useEffect, useState } from 'react';
 import Item from './Item';
-import { format } from 'date-fns';
+
+const url = 'https://api.themoviedb.org/3/trending/all/day';
+const api_key = '9128ef5f0450d945277efc563fe1655f';
 
 export default function ListItems(): React.ReactNode {
   const [data, setData] = useState([]);
@@ -21,11 +17,13 @@ export default function ListItems(): React.ReactNode {
   const getMovies = useCallback(async (page = 1) => {
     try {
       const res = await axios.get(
-        `https://api.themoviedb.org/3/trending/all/day?api_key=9128ef5f0450d945277efc563fe1655f&page=${page}`
+        `${url}?api_key=${api_key}&page=${page}&language=en-US`
       );
       const data = res?.data?.results?.map((item: any) => {
         if (!item?.release_date) {
-          item.release_date = format(new Date(), 'yyyy-MM-dd');
+          item.release_date = format(new Date(), 'yyyy');
+        } else {
+          item.release_date = format(new Date(item.release_date), 'yyyy');
         }
         return item;
       });
@@ -39,33 +37,12 @@ export default function ListItems(): React.ReactNode {
     try {
       setLoading(true);
       let totalMovies: any = [];
-      const movies = await Promise.all([
-        getMovies(1),
-        getMovies(2),
-        getMovies(3),
-        getMovies(4),
-        getMovies(5),
-        getMovies(6),
-        getMovies(7),
-        getMovies(8),
-        getMovies(9),
-        getMovies(10),
-        getMovies(11),
-        getMovies(12),
-        getMovies(13),
-        getMovies(14),
-        getMovies(15),
-        getMovies(16),
-        getMovies(17),
-        getMovies(18),
-        getMovies(19),
-        getMovies(20),
-        getMovies(21),
-        getMovies(22),
-        getMovies(23),
-        getMovies(24),
-        getMovies(25),
-      ]);
+      let requests = [];
+      for (let index = 1; index < 26; index++) {
+        requests.push(getMovies(index));
+      }
+
+      const movies = await Promise.all(requests);
 
       movies.forEach((item) => {
         totalMovies = [...totalMovies, ...item];
@@ -149,15 +126,9 @@ export default function ListItems(): React.ReactNode {
         >
           <Box
             display={'flex'}
-            justifyContent={'space-between'}
+            justifyContent={'flex-end'}
             alignItems={'center'}
           >
-            <Typography
-              variant='h1'
-              sx={{ fontSize: '18px', userSelect: 'none' }}
-            >
-              Trending Movie
-            </Typography>
             <Select
               value={sort}
               label='sort'

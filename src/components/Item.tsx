@@ -1,24 +1,19 @@
 'use client';
 
-import * as React from 'react';
+import { Icon } from '@iconify/react';
+import { Box, Stack } from '@mui/material';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { itemProps } from 'src/types/item';
-import { Box, Stack, styled } from '@mui/material';
-import Link from 'next/link';
-import Iconify, { Icon } from '@iconify/react';
 
 interface props {
   item: itemProps;
   onAddFavorite?: (item: any) => {} | void;
   isActive?: boolean;
 }
-
-const MovieRowContainer = styled('div')({});
 
 export default function Item({ item, onAddFavorite, isActive }: props) {
   const { title, id, name, backdrop_path, vote_average, release_date } = item;
@@ -28,35 +23,34 @@ export default function Item({ item, onAddFavorite, isActive }: props) {
       <Card
         sx={{
           width: 345,
-          height: 445,
-          margin: '7px',
           backgroundColor: '#3333',
           position: 'relative',
           color: 'white',
+          margin: '15px',
         }}
       >
-        <Link href='sd'>
+        <Box position='relative'>
           <CardMedia
             sx={{ height: 240 }}
             image={`https://image.tmdb.org/t/p/original${backdrop_path}`}
             title='green iguana'
           />
-        </Link>
-        <Stack sx={{ position: 'absolute', left: '270px', top: '190px' }}>
-          <Typography
-            variant='overline'
-            color='Highlight'
-            sx={{
-              padding: '5px',
-              backgroundColor: '#903a3a',
-              border: 'none',
-              borderRadius: '7px',
-              alignItems: 'center',
-            }}
-          >
-            {vote_average}
-          </Typography>
-        </Stack>
+          <Stack sx={{ position: 'absolute', right: '10px', bottom: '10px' }}>
+            <Typography
+              variant='overline'
+              sx={{
+                padding: '5px',
+                backgroundColor: 'success.main',
+                borderRadius: '7px',
+                alignItems: 'center',
+                color: 'white',
+              }}
+            >
+              {vote_average}
+            </Typography>
+          </Stack>
+        </Box>
+
         <CardContent>
           <Box
             display='flex'
@@ -76,8 +70,12 @@ export default function Item({ item, onAddFavorite, isActive }: props) {
             </Button>
           </Box>
           <Box>
+            <Typography
+              variant='body2'
+              color='rgb(178 178 178 / 60%)'
+            ></Typography>
             <Typography variant='body2' color='rgb(178 178 178 / 60%)'>
-              {release_date && `Date: ${release_date}` }
+              {release_date && `Year: ${release_date}`}
             </Typography>
           </Box>
         </CardContent>
